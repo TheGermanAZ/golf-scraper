@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "scrape": "node scraper.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.38.1",
     "@types/node": "^20.8.3"
+  },
+  "dependencies": {
+    "playwright": "^1.38.1",
+    "user-agents": "^1.0.1444"
   }
 }
