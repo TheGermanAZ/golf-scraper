@@ -7,7 +7,7 @@ const amzURL =
 (async () => {
   const agent = userAgent.getRandom();
 
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ userAgent: agent });
   const page = await context.newPage({ bypassCSP: true });
   await page.setDefaultTimeout(30000);
@@ -20,14 +20,26 @@ const amzURL =
   // const driver = await list.evaluate((e) => e.innerHTML);
   // console.log(driver);
   // ("rush-component s-latency-cf-section");
-  const productName = await page.textContent(
-    ".a-size-medium.a-color-base.a-text-normal"
+  const products = await page.$$(
+    ".s-main-slot.s-result-list.s-search-results.sg-row > .s-result-item"
   );
-  // const productPrice = await page.textContent(".product .product-price");
 
-  console.log("Product Name:", productName);
-  // console.log("Product Price:", productPrice);
-
+  for (const product of products) {
+    try {
+      const productName = await product.$(
+        ".a-size-medium.a-color-base.a-text-normal"
+      );
+      const productPrice = await product.$(".a-offscreen");
+      const productImage = await product.$(".s-image");
+      console.log(
+        await productName?.evaluate((e) => e.innerHTML),
+        await productPrice?.evaluate((e) => e.innerHTML),
+        await productImage?.evaluate((e) => e.src)
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  }
   await browser.close();
 })().catch((e) => {
   console.error(e);
