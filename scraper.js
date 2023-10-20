@@ -34,8 +34,8 @@ const amzURL =
       );
       let productPrice = await product.$(".a-offscreen");
       let productImage = await product.$(".s-image");
-      productName = await productName?.evaluate((e) => e.innerHTML);
-      productPrice = await productPrice?.evaluate((e) => e.innerHTML);
+      productName = await productName?.evaluate((e) => e.innerText);
+      productPrice = await productPrice?.evaluate((e) => e.innerText);
       productImage = await productImage?.evaluate((e) => e.src);
       try {
         fs.appendFile(
