@@ -1,5 +1,6 @@
 const { chromium } = require("playwright");
 const userAgent = require("random-useragent");
+const fs = require("fs");
 
 const amzURL =
   "https://www.amazon.com/s?k=taylormade+driver&crid=M38PZ1VHMI9G&sprefix=taylormade+driver%2Caps%2C172&ref=nb_sb_noss_1";
@@ -24,6 +25,8 @@ const amzURL =
     ".s-main-slot.s-result-list.s-search-results.sg-row > .s-result-item"
   );
 
+  let items = [];
+
   for (const product of products) {
     try {
       let productName = await product.$(
@@ -31,10 +34,23 @@ const amzURL =
       );
       let productPrice = await product.$(".a-offscreen");
       let productImage = await product.$(".s-image");
-      (productName = await productName?.evaluate((e) => e.innerHTML)),
-        (productPrice = await productPrice?.evaluate((e) => e.innerHTML)),
-        (productImage = await productImage?.evaluate((e) => e.src));
-      console.log(productName, productPrice, productImage);
+      productName = await productName?.evaluate((e) => e.innerHTML);
+      productPrice = await productPrice?.evaluate((e) => e.innerHTML);
+      productImage = await productImage?.evaluate((e) => e.src);
+      try {
+        fs.appendFile(
+          "results.csv",
+          `${productName.replace(/,/g, ".")}, ${productPrice.replace(
+            /,/g,
+            "."
+          )}, ${productImage}\n`,
+          (err) => {
+            if (err) throw err;
+          }
+        );
+      } catch (e) {
+        console.log(e);
+      }
     } catch (e) {
       console.log(e);
     }
