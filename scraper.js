@@ -26,16 +26,15 @@ const amzURL =
 
   for (const product of products) {
     try {
-      const productName = await product.$(
+      let productName = await product.$(
         ".a-size-medium.a-color-base.a-text-normal"
       );
-      const productPrice = await product.$(".a-offscreen");
-      const productImage = await product.$(".s-image");
-      console.log(
-        await productName?.evaluate((e) => e.innerHTML),
-        await productPrice?.evaluate((e) => e.innerHTML),
-        await productImage?.evaluate((e) => e.src)
-      );
+      let productPrice = await product.$(".a-offscreen");
+      let productImage = await product.$(".s-image");
+      (productName = await productName?.evaluate((e) => e.innerHTML)),
+        (productPrice = await productPrice?.evaluate((e) => e.innerHTML)),
+        (productImage = await productImage?.evaluate((e) => e.src));
+      console.log(productName, productPrice, productImage);
     } catch (e) {
       console.log(e);
     }
