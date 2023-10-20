@@ -5,7 +5,7 @@ const fs = require("fs");
 const amzURL =
   "https://www.amazon.com/s?k=taylormade+driver&crid=M38PZ1VHMI9G&sprefix=taylormade+driver%2Caps%2C172&ref=nb_sb_noss_1";
 
-(async () => {
+const scrape = async () => {
   const agent = userAgent.getRandom();
 
   const browser = await chromium.launch({ headless: true });
@@ -15,17 +15,9 @@ const amzURL =
   await page.setViewportSize({ width: 800, height: 600 });
   await page.goto(amzURL);
 
-  // const selector = ".rush-component.s-latency-cf-section";
-  // await page.locator(selector).waitFor();
-  // const list = await page.$(selector);
-  // const driver = await list.evaluate((e) => e.innerHTML);
-  // console.log(driver);
-  // ("rush-component s-latency-cf-section");
   const products = await page.$$(
     ".s-main-slot.s-result-list.s-search-results.sg-row > .s-result-item"
   );
-
-  let items = [];
 
   for (const product of products) {
     try {
@@ -56,7 +48,13 @@ const amzURL =
     }
   }
   await browser.close();
-})().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+};
+
+const main = async () => {
+  scrape().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+};
+
+main();
