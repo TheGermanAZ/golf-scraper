@@ -2,10 +2,16 @@ const { chromium } = require("playwright");
 const userAgent = require("random-useragent");
 const fs = require("fs");
 
-const amzURL =
-  "https://www.amazon.com/s?k=taylormade+driver&crid=M38PZ1VHMI9G&sprefix=taylormade+driver%2Caps%2C172&ref=nb_sb_noss_1";
+// done
+// taylormade
+// callaway
+// titleist
+// ping
+// cleveland
 
-const scrape = async () => {
+const amzURL = [];
+
+const scrape = async (url) => {
   const agent = userAgent.getRandom();
 
   const browser = await chromium.launch({ headless: true });
@@ -13,7 +19,7 @@ const scrape = async () => {
   const page = await context.newPage({ bypassCSP: true });
   await page.setDefaultTimeout(30000);
   await page.setViewportSize({ width: 800, height: 600 });
-  await page.goto(amzURL);
+  await page.goto(url);
 
   const products = await page.$$(
     ".s-main-slot.s-result-list.s-search-results.sg-row > .s-result-item"
@@ -50,11 +56,13 @@ const scrape = async () => {
   await browser.close();
 };
 
-const main = async () => {
-  scrape().catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+const main = async (urls) => {
+  for (const url of urls) {
+    scrape(url).catch((e) => {
+      console.error(e);
+      process.exit(1);
+    });
+  }
 };
 
-main();
+main(amzURL);
